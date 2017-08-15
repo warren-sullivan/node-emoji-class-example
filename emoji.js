@@ -11,11 +11,6 @@ function getRandomInt(min, max) {
 let data;
 let array = [];
 
-const server = http.createServer((req, res) => {
-	res.write(array[getRandomInt(0, array.length)]);
-	res.end();
-});
-
 const options = {
   host: 'raw.githubusercontent.com',
   port: 443,
@@ -35,12 +30,19 @@ let req = https.request(options, (res) => {
 			array.push(data[i]);
 		}
 
-		// for(i in array) {
-		// 	console.log(array[i]);
-		// }
-
 		server.listen(8001);
 	});
 });
 
 req.end();
+
+const server = http.createServer((req, res) => {
+	let output = '';
+	for(let i=0; i<30; i++) {
+		output += array[getRandomInt(0, array.length)];
+		output += '  ';
+	}
+	output += '\n';
+	res.write(output);
+	res.end();
+});
